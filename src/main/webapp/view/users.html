@@ -1,0 +1,116 @@
+<div class="col-md-2 col-lg-2"></div>
+<div class="col-md-8 col-lg-8" ng-controller="UsersController">
+    <div class="center">
+        <h3>Пользователи</h3>
+    </div>
+    <div>
+        <div class="row">
+            <div class="control-menu col-lg-2">
+                <button type="button" class="no-border-button btn btn-success" data-ng-click="UserAddClick()">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить
+                </button>
+            </div>
+            <table ng-table="table" class="table up table-condensed table-bordered table-striped">
+                <tr ng-repeat="row in $data">
+                    <td data-ng-click="UserTrClick(row)" title="'Имя пользователя'" filter="{ name: 'text'}"
+                        sortable="'name'">
+                        {{row.name}}
+                    </td>
+                    <td data-ng-click="UserTrClick(row)" title="'Логин для входа'" filter="{ username: 'text'}"
+                        sortable="'username'">{{row.username}}
+                    </td>
+                    <td title="'Роли'"><span data-ng-click="UserTrClick(row)"
+                                             ng-repeat="role in row.roles">{{role}}<span
+                            ng-if="$index < (row.roles.length-1)">,</span>
+							</span>
+                        <button type="button" class="no-border-button btn btn-danger btn-xs pull-right"
+                                data-ng-click="UserDeleteClick(row)">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Удалить
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-md-2 col-lg-2"></div>
+
+<script type="text/ng-template" id="usersEditView.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">Добавить/Изменить пользователя</h3>
+        <span class="warning-text" ng-show="showSpan()">
+                        ВАЖНО! При смене логина текущая сессия будет завершена!
+        </span>
+    </div>
+    <div class="modal-body">
+        <form name="userForm">
+            <div class="form-group"
+                 ng-class="{ 'has-error' : userForm.name.$invalid && !userForm.name.$pristine }">
+                <label>Имя пользователя</label>
+                <input type="text" class="form-control" name="name"
+                       ng-model="usersNewEdit.name"
+                       placeholder="Имя пользователя" required>
+                <div ng-messages="userForm.name.$error" ng-messages-multiple
+                     ng-show="!userForm.name.$pristine">
+                    <div ng-message="required" class="help-block">Укажите имя пользователя</div>
+                </div>
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : userForm.userName.$invalid && !userForm.userName.$pristine }">
+                <label>Логин для входа</label>
+                <input type="text" class="form-control" id="userName" name="userName"
+                       ng-model="usersNewEdit.username"
+                       placeholder="Логин для входа" required>
+                <div ng-messages="userForm.userName.$error" ng-messages-multiple
+                     ng-show="!userForm.userName.$pristine">
+                    <div ng-message="required" class="help-block">Укажите логин для входа</div>
+                </div>
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error': userForm.role.$invalid && userForm.role.$dirty }">
+                <label for="role">Роли</label>
+                <select required
+                        multiple="multiple" class="form-control"
+                        ng-model="usersNewEdit.roles" id="role" name="role">
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="USER">USER</option>
+                    <option value="WITHOUTRIGHTS">WITHOUTRIGHTS</option>
+                </select>
+            </div>
+            <div class="form-group" ng-show="showcheck">
+                <label>Сменить пароль: </label>
+                <input type="checkbox" ng-model="changepass" id="changepass"/>
+            </div>
+            <div class="form-group" ng-show="changepass"
+                 ng-class="{ 'has-error': userForm.password.$invalid && userForm.password.$dirty }">
+                <label>Пароль</label>
+                <input type="password"
+                       ng-required="changepass"
+                       class="form-control"
+                       ng-model="usersNewEdit.password" name="password" autocomplete="new-password">
+                <div ng-messages="userForm.password.$error" ng-messages-multiple
+                     ng-show="!userForm.password.$pristine">
+                    <div ng-message="required" class="help-block">Укажите пароль</div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(usersNewEdit)" ng-disabled="userForm.$invalid">
+            Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="usersDeleteView.html">
+    <div class="modal-header" ng-model="usersNewEdit">
+        <h3 class="modal-title">Вы действительно хотите удалить пользоавателя <span style="color: red;">{{usersNewEdit.name}}</span>?
+        </h3>
+    </div>
+    <div class="modal-footer" ng-model="usersNewEdit">
+        <button class="btn btn-primary" type="button" ng-click="ok(usersNewEdit.id)">Да</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Нет</button>
+    </div>
+</script>

@@ -1,0 +1,81 @@
+<div class="col-md-3 col-lg-3"></div>
+<div class="col-md-6 col-lg-6">
+    <div class="center">
+        <h3 class="middle">Подразделения</h3>
+    </div>
+    <div>
+        <div class="row" ng-controller="SubUnitController">
+            <div class="control-menu">
+                <button type="button" class="no-border-button btn btn-success" data-ng-click="SubUnitAddClick()">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить
+                </button>
+                <button type="button" class="no-border-button btn btn-info"
+                        data-ng-click="PlaceOfStorageAddClick()">Создать места хранения по
+                    подразделениям
+                </button>
+            </div>
+            <table ng-table="table" class="table up table-condensed table-bordered table-striped">
+                <tr ng-repeat="row in $data">
+                    <td title="'Наименование подразделения'" filter="{ name: 'text'}"
+                        sortable="'name'">
+                        <span class="td-modal" data-ng-click="SubUnitTrClick(row)">{{row.name}}</span>
+                        <button type="button" class="no-border-button btn btn-danger btn-xs pull-right"
+                                data-ng-click="SubUnitDeleteClick(row)">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-md-3 col-lg-3"></div>
+
+<script type="text/ng-template" id="subUnitEditView.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">Добавить/Изменить подразделение</h3>
+    </div>
+    <div class="modal-body">
+        <form name="subUnit">
+            <div class="form-group"
+                 ng-class="{ 'has-error' : subUnit.subUnitName.$invalid && !subUnit.subUnitName.$pristine }">
+                <label>Наименование</label>
+                <input type="text" class="form-control" id="subUnitName" name="subUnitName"
+                       ng-model="subUnitNewEdit.name"
+                       placeholder="Наименование" required>
+                <div ng-messages="subUnit.subUnitName.$error" ng-messages-multiple
+                     ng-show="!subUnit.subUnitName.$pristine">
+                    <div ng-message="required" class="help-block">Укажите наименование</div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(subUnitNewEdit)" ng-disabled="subUnit.$invalid">
+            Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="subUnitDeleteView.html">
+    <div class="modal-header" ng-model="subUnitNewEdit">
+        <h3 class="modal-title">Вы действительно хотите удалить <span style="color: red;">{{subUnitNewEdit.name}}</span>?
+        </h3>
+    </div>
+    <div class="modal-footer" ng-model="subUnitNewEdit">
+        <button class="btn btn-primary" type="button" ng-click="ok(subUnitNewEdit.id)">Да</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Нет</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="placeOfStorageAdd.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Вы действительно хотите создать места хранения по подразделениям?</h3>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Да</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Нет</button>
+    </div>
+</script>

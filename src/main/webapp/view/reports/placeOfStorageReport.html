@@ -1,0 +1,61 @@
+<div class="row" ng-controller="PlaceOfStorageReportController">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10">
+        <h3 class="middle">Отчет по выбранному месту хранения</h3>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <ui-select ng-model="currentPlaceOfStorage" theme="selectize" ng-change="SelectPOS(currentPlaceOfStorage)"
+                       class="select-in-report noprint">
+                <ui-select-match placeholder="Поиск...">{{$select.selected.name}}</ui-select-match>
+                <ui-select-choices repeat="placeOfStorage in placesOfStorage | filter: $select.search">
+                    <div ng-bind-html="placeOfStorage.name+' ('+placeOfStorage.typeOfStoragePlace.name+')' | highlight: $select.search"></div>
+                    <small ng-bind-html="placeOfStorage.workers.surname+' '+placeOfStorage.workers.name+' '+placeOfStorage.workers.patronymic | highlight: $select.search"></small>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+        <div class="col-sm-4"></div>
+        <table class="report">
+            <thead>
+            <tr>
+                <td><strong>Наименование</strong></td>
+                <td><strong>Инвентарный номер</strong></td>
+                <td><strong>Серийный номер</strong></td>
+                <td><strong>Barcode</strong></td>
+                <td><strong>Дата сборки (поступления)</strong></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat-start="collection in collections | orderBy:'inventoryNumber'">
+                <td class="main-td">{{collection.name}}</td>
+                <td>{{collection.inventoryNumber}}</td>
+                <td>{{collection.serialNumber}}</td>
+                <td>{{collection.barcode}}</td>
+                <td>{{collection.buildDate | date:"longDate"}}</td>
+            </tr>
+            <tr ng-show="collections.length > 0">
+                <td colspan="5"><strong>В сборку входит</strong></td>
+            </tr>
+            <tr ng-repeat="nomenclatureCard in nomenclatureCards | filter: { collectionId: collection.id } | orderBy:'inventoryNumber'">
+                <td class="main-td">{{nomenclatureCard.nomenclature.name}}</td>
+                <td>{{nomenclatureCard.inventoryNumber}}</td>
+                <td>{{nomenclatureCard.serialNumber}}</td>
+                <td>{{nomenclatureCard.barcode}}</td>
+                <td>{{nomenclatureCard.buildDate | date:"longDate"}}</td>
+            </tr>
+            <tr ng-repeat-end>
+                <td colspan="5"><strong>Россыпь</strong></td>
+            </tr>
+            <tr ng-repeat="nomenclatureCard in nomenclatureCards | filter: { collection: null } | orderBy:'inventoryNumber'">
+                <td class="main-td">{{nomenclatureCard.nomenclature.name}}</td>
+                <td>{{nomenclatureCard.inventoryNumber}}</td>
+                <td>{{nomenclatureCard.serialNumber}}</td>
+                <td>{{nomenclatureCard.barcode}}</td>
+                <td>{{nomenclatureCard.buildDate | date:"longDate"}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+    <div class="col-sm-1"></div>
+</div>

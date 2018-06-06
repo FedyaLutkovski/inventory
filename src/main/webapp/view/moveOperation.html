@@ -1,0 +1,144 @@
+<div class="row main-view-place-of-storage" ng-controller="MoveOperationController">
+    <div class="col-md-3 col-lg-2">
+        <div class="panel panel-primary nomenclature-card-in-place-of-storage">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <ul class="list-group list-group-flush nomenclature-card-in-place-of-storage">
+                    <li class="list-group-item angular-ui-tree-handle"
+                        ng-repeat="moveOperationDocument in moveOperationDocuments | orderBy:'-documentNumber'"
+                        data-ng-click="moveOperationDocumentClick(moveOperationDocument)"
+                        ng-class="{selected: currentMoveOperationDocument === moveOperationDocument}">
+                        <div class="row nomenclature-card-description">
+                            <div class="col-sm-4">
+                                {{moveOperationDocument.documentNumber}}
+                            </div>
+                            <div class="col-sm-8">
+                                {{moveOperationDocument.operationDate | date:"longDate"}}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9 col-lg-10">
+        <h4>
+            Предыдущее место хранения: {{currentMoveOperationDocument.placeOfStorage.name}}
+            <span ng-show="currentMoveOperationDocument.placeOfStorage.workers != null">
+             ({{currentMoveOperationDocument.placeOfStorage.workers.surname +" "+
+                        currentMoveOperationDocument.placeOfStorage.workers.name +" "+
+                        currentMoveOperationDocument.placeOfStorage.workers.patronymic}})
+            </span>
+        </h4>
+        <h4>
+            Новое место хранения: {{currentMoveOperationDocument.newPlaceOfStorage.name}}
+            <span ng-show="currentMoveOperationDocument.newPlaceOfStorage.workers != null">
+             ({{currentMoveOperationDocument.newPlaceOfStorage.workers.surname +" "+
+            currentMoveOperationDocument.newPlaceOfStorage.workers.name +" "+
+            currentMoveOperationDocument.newPlaceOfStorage.workers.patronymic}})
+            </span>
+        </h4>
+        <h4>
+            Пользователь, выполнивший операцию: {{currentMoveOperationDocument.appUser.name}}
+        </h4>
+        <uib-tabset active="active">
+            <uib-tab index="0">
+                <uib-tab-heading>
+                    Сборки <span class="badge">{{collections.length}}</span>
+                </uib-tab-heading>
+                <table ng-table="tableCollectionsParams" class="table up table-condensed table-bordered table-striped">
+                    <tr ng-repeat="row in $data" data-ng-click="collectionClick(row)">
+                        <td title="'Инвентарный номер'" filter="{ inventoryNumber: 'text'}"
+                            sortable="'inventoryNumber'">
+                            {{row.inventoryNumber}}
+                        </td>
+                        <td title="'Наименование'" filter="{ name: 'text'}" sortable="'name'">
+                            {{row.name}}
+                        </td>
+                        <td title="'Серийный номер'" filter="{ serialNumber: 'text'}" sortable="'serialNumber'">
+                            {{row.serialNumber}}
+                        </td>
+                        <td title="'Дата сборки'" sortable="'buildDate'">
+                            {{row.buildDate | date:"longDate"}}
+                        </td>
+                    </tr>
+                </table>
+            </uib-tab>
+            <uib-tab index="1">
+                <uib-tab-heading>
+                    Россыпь <span class="badge">{{nomenclatureCards.length}}</span>
+                </uib-tab-heading>
+                <table ng-table="tableNomenclatureCardsParams"
+                       class="table table-condensed table-bordered table-striped">
+                    <tr ng-repeat="row in $data">
+                        <td title="'Инвентарный номер'" filter="{ inventoryNumber: 'text'}"
+                            sortable="'inventoryNumber'">
+                            {{row.inventoryNumber}}
+                        </td>
+                        <td title="'Наименование'" filter="{ 'nomenclature.name': 'text'}"
+                            sortable="'nomenclature.name'">
+                            {{row.nomenclature.name}}
+                        </td>
+                        <td title="'Тип номенклатуры'" filter="{ 'nomenclature.nomenclatureType.name': 'text'}"
+                            sortable="'nomenclature.nomenclatureType.name'">
+                            {{row.nomenclature.nomenclatureType.name}}
+                        </td>
+                        <td title="'Серийный номер'" filter="{ serialNumber: 'text'}" sortable="'serialNumber'">
+                            {{row.serialNumber}}
+                        </td>
+                        <td title="'Количество'" filter="{ count: 'number'}" sortable="'count'">
+                            {{row.count}}
+                        </td>
+                    </tr>
+                </table>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>
+
+<script type="text/ng-template" id="nomenclatureCardIncollection.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">{{collection.name}} инв. {{collection.inventoryNumber}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <table ng-table="tableNomenclatureCardsInCollectionParams"
+                   class="table table-condensed table-bordered table-striped">
+                <tr ng-repeat="row in $data">
+                    <td title="'Наименование'" filter="{ 'nomenclature.name': 'text'}" sortable="'nomenclature.name'">
+                        {{row.nomenclature.name}}
+                    </td>
+                    <td title="'Тип номенклатуры'" filter="{ 'nomenclature.nomenclatureType.name': 'text'}"
+                        sortable="'nomenclature.nomenclatureType.name'">
+                        {{row.nomenclature.nomenclatureType.name}}
+                    </td>
+                    <td title="'Серийный номер'" filter="{ serialNumber: 'text'}" sortable="'serialNumber'">
+                        {{row.serialNumber}}
+                    </td>
+                    <td title="'Количество'" filter="{ count: 'number'}" sortable="'count'">
+                        {{row.count}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="close()">Закрыть</button>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="workersDeleteView.html">
+    <div class="modal-header" ng-model="workersNewEdit">
+        <h3 class="modal-title">Вы действительно хотите удалить <span
+                style="color: red;">{{workersNewEdit.name}}</span>?
+        </h3>
+    </div>
+    <div class="modal-footer" ng-model="workersNewEdit">
+        <button class="btn btn-primary" type="button" ng-click="ok(workersNewEdit.id)">Да
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Нет</button>
+    </div>
+</script>

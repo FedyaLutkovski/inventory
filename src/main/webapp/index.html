@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Инвентаризатор</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
+    <link href="css/angular-ui-tree.min.css" rel="stylesheet"/>
+    <link href="css/select.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <link rel="stylesheet" href="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.css">
+    <base href="/">
+</head>
+<body ng-app="app">
+<div ui-view="mainView"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.0/underscore-min.js"></script>
+<script src="https://cdn.rawgit.com/mgonto/restangular/master/dist/restangular.min.js"></script>
+<script src="https://cdn.rawgit.com/lodash/lodash/3.10.1/lodash.min.js"></script>
+<script src="https://rawgit.com/marklagendijk/ui-router.stateHelper/master/statehelper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://code.angularjs.org/1.3.0-rc.2/i18n/angular-locale_ru-ru.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.16/angular-messages.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-sanitize.js"></script>
+<script src="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.js"></script>
+
+<script src="js/angular-ui-tree.min.js"></script>
+<script src="js/angular-file-upload.min.js"></script>
+<script src="js/select.js"></script>
+
+<script src="config/main-app.js"></script>
+<script src="config/rest-config.js"></script>
+<script src="config/router.js"></script>
+<script src="config/directives.js"></script>
+<script src="config/factory.js"></script>
+
+<script src="controller/header-controller.js"></script>
+
+<script src="service/api/sub-unit-api-service.js"></script>
+<script src="service/data/sub-unit-data-service.js"></script>
+<script src="controller/sub-unit-controller.js"></script>
+
+<script src="service/api/workers-api-service.js"></script>
+<script src="service/data/workers-data-service.js"></script>
+<script src="controller/workers-controller.js"></script>
+
+<script src="service/api/type-of-storage-place-api-service.js"></script>
+<script src="service/data/type-of-storage-place-data-service.js"></script>
+<script src="controller/typeof-storage-place-controller.js"></script>
+
+<script src="service/api/place-of-storage-api-service.js"></script>
+<script src="service/data/place-of-storage-data-service.js"></script>
+<script src="controller/place-of-storage-controller.js"></script>
+<script src="service/data/place-of-storage-temp-data-service.js"></script>
+
+<script src="service/api/nomenclature-type-api-service.js"></script>
+<script src="service/data/nomenclature-type-data-service.js"></script>
+<script src="controller/nomenclature-type-controller.js"></script>
+
+<script src="service/api/nomenclature-api-service.js"></script>
+<script src="service/data/nomenclature-data-service.js"></script>
+<script src="controller/nomenclature-controller.js"></script>
+
+<script src="service/api/nomenclature-card-api-service.js"></script>
+
+<script src="service/api/collection-api-service.js"></script>
+
+<script src="controller/nomenclature-controller.js"></script>
+
+<script src="controller/upload-controller.js"></script>
+
+<script src="service/api/parse-ini-file-api-service.js"></script>
+<script src="controller/parse-ini-file-controller.js"></script>
+<script src="service/data/parse-ini-file-data-storage.js"></script>
+
+<script src="service/api/inventory-operation-api-service.js"></script>
+<script src="controller/inventory-operation-controller.js"></script>
+<script src="service/data/inventory-operation-data-service.js"></script>
+
+<script src="service/api/move-operation-api-service.js"></script>
+<script src="controller/move-operation-controller.js"></script>
+<script src="service/data/move-operation-data-service.js"></script>
+
+<script src="service/api/writte-off-operation-api-service.js"></script>
+<script src="controller/write-off-operation-controller.js"></script>
+<script src="service/data/writte-off-operation-data-service.js"></script>
+
+<script src="service/api/upload-api-service.js"></script>
+
+<script src="service/api/login-api-service.js"></script>
+<script src="service/data/auth-service.js"></script>
+<script src="controller/login-controller.js"></script>
+<script src="controller/access-denied.js"></script>
+
+<script src="service/api/users-api-service.js"></script>
+<script src="controller/users-controller.js"></script>
+<script src="service/data/users-data-service.js"></script>
+
+<script src="controller/nomenclature-card-report-controller.js"></script>
+<script src="controller/place-of-storage-report-controller.js"></script>
+<script src="controller/type-of-storage-place-report-controller.js"></script>
+<script src="controller/place-of-storage-by-nomenclature-report-controller.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<div ng-controller="LoginController">
+    <div class=" col-md-4 col-md-offset-4">
+        <div class="login-form">
+            <form>
+                <h2 class="text-center">Авторизация</h2>
+                <div class="form-group">
+                    <input type="text" id="username" ng-model="user.username" class="form-control" placeholder="Логин"
+                           required="required">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="password" ng-model="user.password"
+                           placeholder="Пароль" required="required">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" type="button" ng-click="login(user)">
+                        Войти
+                    </button>
+                    <button class="btn btn-default btn-block" type="button" ng-click="UserAddClick()">
+                        Регистрация
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="alerts-block">
+        <uib-alert class='alert animated' ng-repeat="alert in alerts" dismiss-on-timeout="3000"
+                   type="{{alert.type}}"
+                   close="alerts.splice($index, 1);">{{alert.msg}}
+        </uib-alert>
+    </div>
+</div>
+<script type="text/ng-template" id="userRegistration.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">Регистрация пользователя</h3>
+    </div>
+    <div class="modal-body">
+        <form name="userForm">
+            <div class="form-group"
+                 ng-class="{ 'has-error' : userForm.name.$invalid && !userForm.name.$pristine }">
+                <label>Имя пользователя</label>
+                <input type="text" class="form-control" name="name"
+                       ng-model="usersNewEdit.name"
+                       placeholder="Имя пользователя" required>
+                <div ng-messages="userForm.name.$error" ng-messages-multiple
+                     ng-show="!userForm.name.$pristine">
+                    <div ng-message="required" class="help-block">Укажите имя пользователя</div>
+                </div>
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : userForm.userName.$invalid && !userForm.userName.$pristine }">
+                <label>Логин для входа</label>
+                <input type="text" class="form-control" name="userName"
+                       ng-model="usersNewEdit.username"
+                       placeholder="Логин для входа" required>
+                <div ng-messages="userForm.userName.$error" ng-messages-multiple
+                     ng-show="!userForm.userName.$pristine">
+                    <div ng-message="required" class="help-block">Укажите логин для входа</div>
+                </div>
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error': userForm.password.$invalid && userForm.password.$dirty }">
+                <label>Пароль</label>
+                <input type="password"
+                       required class="form-control"
+                       ng-model="usersNewEdit.password" name="password" autocomplete="new-password">
+                <div ng-messages="userForm.password.$error" ng-messages-multiple
+                     ng-show="!userForm.password.$pristine">
+                    <div ng-message="required" class="help-block">Укажите пароль</div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(usersNewEdit)" ng-disabled="userForm.$invalid">
+            Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>

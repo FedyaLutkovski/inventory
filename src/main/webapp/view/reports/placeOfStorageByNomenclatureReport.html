@@ -1,0 +1,24 @@
+<div class="row" ng-controller="PlaceOfStorageByNomenclatureReportController">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+        <h3 class="middle">Отчет по наличию на местах хранения по выбранной карточке номенклатуры</h3>
+        <table class="report">
+            <thead>
+            <tr>
+                <td><strong>Место хранения</strong></td>
+                <td><strong>Сотрудник</strong></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="placeOfStorage in placesOfStorage | orderBy:'name'">
+                <td>{{placeOfStorage.name}}</td>
+                <td>{{placeOfStorage.workers.surname +" "+
+                    placeOfStorage.workers.name +" "+
+                    placeOfStorage.workers.patronymic}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-3"></div>
+</div>

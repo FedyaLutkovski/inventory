@@ -1,0 +1,187 @@
+<div class="row main-view-place-of-storage" ng-controller="InventoryController">
+    <div class="col-md-3 col-lg-3">
+        <div class="btn-group">
+            <button type="button" class="btn btn-success btn-s" data-ng-click="newInventoryClick(0)"
+                    uib-tooltip="Создание нового документа инвентаризации" tooltip-placement="bottom">
+                Инвентаризация
+            </button>
+            <button type="button" class="btn btn-info btn-s" data-ng-click="newInventoryClick(1)"
+                    uib-tooltip="Добавление в текущий документ инвентаризации" tooltip-placement="bottom">
+                Добавить
+            </button>
+        </div>
+        <div class="panel panel-primary nomenclature-card-in-place-of-storage">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <ul class="list-group list-group-flush nomenclature-card-in-place-of-storage">
+                    <li class="list-group-item angular-ui-tree-handle"
+                        ng-repeat="inventoryDocument in inventoryDocuments | orderBy:'-documentNumber'"
+                        data-ng-click="inventoryDocumentClick(inventoryDocument)"
+                        ng-class="{selected: currentInventoryDocument === inventoryDocument}">
+                        <div class="row nomenclature-card-description">
+                            <div class="col-sm-2">
+                                {{inventoryDocument.documentNumber}}
+                            </div>
+                            <div class="col-sm-5">
+                                {{inventoryDocument.operationDate | date:"longDate"}}
+                            </div>
+                            <div class="col-sm-5">
+                                {{inventoryDocument.appUser.name}}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9 col-lg-9">
+        <uib-tabset active="active">
+            <uib-tab index="0">
+                <uib-tab-heading>
+                    Сборки <span class="badge">{{collections.length}}</span>
+                </uib-tab-heading>
+                <table ng-table="tableCollectionsParams" class="table up table-condensed table-bordered table-striped">
+                    <tr ng-repeat="row in $data" data-ng-click="collectionClick(row)">
+                        <td title="'Инвентарный номер'" filter="{ inventoryNumber: 'text'}"
+                            sortable="'inventoryNumber'">
+                            {{row.inventoryNumber}}
+                        </td>
+                        <td title="'Наименование'" filter="{ name: 'text'}" sortable="'name'">
+                            {{row.name}}
+                        </td>
+                        <td title="'Место хранения'" filter="{ placeOfStorage: 'text'}" sortable="'placeOfStorage'">
+                            {{row.placeOfStorage}}
+                        </td>
+                        <td title="'Cотрудник'" filter="{ worker: 'text'}" sortable="'worker'">
+                            {{row.worker}}
+                        </td>
+                        <td title="'Серийный номер'" filter="{ serialNumber: 'text'}" sortable="'serialNumber'">
+                            {{row.serialNumber}}
+                        </td>
+                        <td title="'Дата сборки'" sortable="'buildDate'">
+                            {{row.buildDate | date:"longDate"}}
+                        </td>
+                    </tr>
+                </table>
+            </uib-tab>
+            <uib-tab index="1">
+                <uib-tab-heading>
+                    Россыпь <span class="badge">{{nomenclatureCards.length}}</span>
+                </uib-tab-heading>
+                <table ng-table="tableNomenclatureCardsParams"
+                       class="table table-condensed table-bordered table-striped">
+                    <tr ng-repeat="row in $data">
+                        <td title="'Инвентарный номер'" filter="{ inventoryNumber: 'text'}"
+                            sortable="'inventoryNumber'">
+                            {{row.inventoryNumber}}
+                        </td>
+                        <td title="'Наименование'" filter="{ 'nomenclature.name': 'text'}"
+                            sortable="'nomenclature.name'">
+                            {{row.nomenclature.name}}
+                        </td>
+                        <td title="'Тип номенклатуры'" filter="{ 'nomenclature.nomenclatureType.name': 'text'}"
+                            sortable="'nomenclature.nomenclatureType.name'">
+                            {{row.nomenclature.nomenclatureType.name}}
+                        </td>
+                        <td title="'Место хранения'" filter="{ placeOfStorage: 'text'}" sortable="'placeOfStorage'">
+                            {{row.placeOfStorage}}
+                        </td>
+                        <td title="'Cотрудник'" filter="{ worker: 'text'}" sortable="'worker'">
+                            {{row.worker}}
+                        </td>
+                        <td title="'Серийный номер'" filter="{ serialNumber: 'text'}" sortable="'serialNumber'">
+                            {{row.serialNumber}}
+                        </td>
+                        <td title="'Количество'" filter="{ count: 'number'}" sortable="'count'">
+                            {{row.count}}
+                        </td>
+                    </tr>
+                </table>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>
+
+
+<script type="text/ng-template" id="inventoryUpload.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">Загрузка файла из ТСД</h3>
+    </div>
+    <div class="modal-body">
+        <div ng-show="uploader.isHTML5">
+            <div nv-file-drop="" uploader="uploader">
+                <div nv-file-over="" uploader="uploader" over-class="another-file-over-class"
+                     class="drop-zone well my-drop-zone">
+                    Перетащите файлы для загрузки
+                </div>
+            </div>
+        </div>
+        <input type="file" nv-file-select="" uploader="uploader"/><br/>
+        <ul class="list-group list-group-flush nomenclature-card-in-place-of-storage">
+            <li class="list-group-item angular-ui-tree-handle"
+                ng-repeat="item in uploader.queue">
+                <div class="row">
+                    <div class="col-md-3"><strong>{{ item.file.name }}</strong></div>
+                    <div class="col-md-2" ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB
+                    </div>
+                    <div class="col-md-3" ng-show="uploader.isHTML5">
+                        <div class="progress" style="margin-bottom: 0;">
+                            <div class="progress-bar" role="progressbar"
+                                 ng-style="{ 'width': item.progress + '%' }"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                        <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                        <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()"
+                                ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                            <span class="glyphicon glyphicon-upload"></span> Загрузить
+                        </button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="close()">Закрыть</button>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="nomenclatureCardIncollection.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">{{collection.name}} инв. {{collection.inventoryNumber}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <table ng-table="tableNomenclatureCardsInCollectionParams"
+                   class="table table-condensed table-bordered table-striped">
+                <tr ng-repeat="row in $data">
+                    <td title="'Наименование'" filter="{ 'nomenclature.name': 'text'}" sortable="'nomenclature.name'">
+                        {{row.nomenclature.name}}
+                    </td>
+                    <td title="'Тип номенклатуры'" filter="{ 'nomenclature.nomenclatureType.name': 'text'}"
+                        sortable="'nomenclature.nomenclatureType.name'">
+                        {{row.nomenclature.nomenclatureType.name}}
+                    </td>
+                    <td title="'Серийный номер'" filter="{ serialNumber: 'text'}" sortable="'serialNumber'">
+                        {{row.serialNumber}}
+                    </td>
+                    <td title="'Количество'" filter="{ count: 'number'}" sortable="'count'">
+                        {{row.count}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="close()">Закрыть</button>
+    </div>
+
+</script>

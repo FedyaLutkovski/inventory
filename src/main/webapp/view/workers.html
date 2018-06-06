@@ -1,0 +1,119 @@
+<div class="col-md-1 col-lg-1"></div>
+<div class="col-md-10 col-lg-10">
+    <div class="center">
+        <h3 class="middle">Сотрудники</h3>
+    </div>
+    <div>
+        <div class="row" ng-controller="WorkersController">
+
+            <div class="control-menu col-lg-2">
+                <button type="button" class="no-border-button btn btn-success" data-ng-click="WorkersAddClick()">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить
+                </button>
+            </div>
+            <table ng-table="table" class="table up table-condensed table-bordered table-striped">
+                <tr ng-repeat="row in $data">
+                    <td data-ng-click="WorkersTrClick(row)" title="'ФИО'" filter="{ surname: 'text'}"
+                        sortable="'surname'">
+                        {{row.surname}} {{row.name}} {{row.patronymic}}
+                    </td>
+                    <td data-ng-click="WorkersTrClick(row)" title="'Описание'" filter="{ description: 'text'}"
+                        sortable="'description'">{{row.description}}
+                    </td>
+                    <td data-ng-click="WorkersTrClick(row)" title="'Телефон'" filter="{ phone: 'text'}"
+                        sortable="'phone'">{{row.phone}}
+                    </td>
+                    <td title="'Подразделение'" filter="{ 'subUnit.name': 'text'}"
+                        sortable="'subUnit.name'">
+                        <span class="td-modal" data-ng-click="WorkersTrClick(row)">
+                            {{row.subUnit.name}}
+                            <span ng-show="row.subUnit.deletedData!=null" class="deletedModel">(удалено)</span>
+                        </span>
+                        <button type="button" class="no-border-button btn btn-danger btn-xs pull-right"
+                                data-ng-click="WorkersDeleteClick(row)">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-md-1 col-lg-1"></div>
+
+<script type="text/ng-template" id="workersEditView.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">Добавить/Изменить данные о сотруднике</h3>
+    </div>
+    <div class="modal-body">
+        <form name="worker">
+            <div class="form-group"
+                 ng-class="{ 'has-error' : worker.workerSurname.$invalid && !worker.workerSurname.$pristine }">
+                <label>Фамилия</label>
+                <input type="text" class="form-control" id="workerSurname" name="workerSurname"
+                       ng-model="workersNewEdit.surname"
+                       placeholder="Фамилия" required>
+                <div ng-messages=" worker.workerSurname.$error" ng-messages-multiple
+                     ng-show="! worker.workerSurname.$pristine">
+                    <div ng-message="required" class="help-block">Укажите фамилию</div>
+                </div>
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : worker.workerName.$invalid && !worker.workerName.$pristine }">
+                <label>Имя</label>
+                <input type="text" class="form-control" id="workerName" ng-model="workersNewEdit.name"
+                       placeholder="Имя" required>
+                <div ng-messages=" worker.workerName.$error" ng-messages-multiple
+                     ng-show="! worker.workerName.$pristine">
+                    <div ng-message="required" class="help-block">Укажите имя</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Отчество</label>
+                <input type="text" class="form-control" id="workerPatronymic" ng-model="workersNewEdit.patronymic"
+                       placeholder="Отчество">
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <input type="text" class="form-control" id="workerDescription" ng-model="workersNewEdit.description"
+                       placeholder="Описание">
+            </div>
+            <div class="form-group">
+                <label>Телефон</label>
+                <input type="text" class="form-control" id="workerPhone" ng-model="workersNewEdit.phone"
+                       placeholder="Телефон">
+            </div>
+            <div class="form-group">
+                <label>Подразделения</label>
+                <ui-select ng-model="workersNewEdit.subUnit" theme="selectize" required>
+                    <ui-select-match placeholder="Поиск...">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="subUnit in subUnits | filter: $select.search">
+                        <div ng-bind-html="subUnit.name | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(workersNewEdit)" ng-disabled="worker.$invalid">
+            Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="workersDeleteView.html">
+    <div class="modal-header" ng-model="workersNewEdit">
+        <h3 class="modal-title">Вы действительно хотите удалить пользователя
+            <span style="color: red;">
+                {{workersNewEdit.surname}} {{workersNewEdit.name}} {{workersNewEdit.patronymic}}
+            </span>?
+        </h3>
+    </div>
+    <div class="modal-footer" ng-model="workersNewEdit">
+        <button class="btn btn-primary" type="button" ng-click="ok(workersNewEdit.id)">Да
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Нет</button>
+    </div>
+</script>

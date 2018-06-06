@@ -1,0 +1,590 @@
+<div ng-controller="PlaceOfStorageController">
+    <div class="main-view-place-of-storage row">
+        <div class="col-sm-5 sticky">
+            <div class="btn-group">
+                <button ng-click="expandAll()" class="btn btn-info btn-s ">Раскрыть список</button>
+                <button ng-click="collapseAll()" class="btn btn-info btn-s ">Свернуть список</button>
+                <button type="button" class="btn btn-success btn-s"
+                        data-ng-click="PlaceOfStorageAddClick()">
+                    Добавить место хранения
+                </button>
+            </div>
+            <div class="panel panel-primary nomenclature-card-in-place-of-storage ">
+                <div class="panel-heading">
+                    <input ng-model="query" ng-change="findNodes()" style="height: 30px" class="form-control"
+                           placeholder="Поиск">
+                </div>
+                <div class="panel-body scroll-in-panel-with-search" ng-if="data.length > 0">
+                    <div ui-tree id="tree-root" class="angular-ui-tree">
+                        <ol ui-tree-nodes ng-model="data"
+                            class="ng-pristine ng-untouched ng-valid angular-ui-tree-nodes">
+                            <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'"
+                                class="angular-ui-tree-node" collapsed="true"
+                                ng-show="visible(node)"></li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card col-sm-7 sticky">
+            <div class="btn-group">
+                <button type="button" class="btn btn-success"
+                        ng-class="{'disabled': !data}"
+                        data-ng-click="!data || NomenclatureCardAddClick()">
+                    Добавить карточку номенклатуры
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                            ng-class="{'disabled':(selectedNomenclatureCardsWithoutCollection.length<1
+                            && selectedNomenclatureCardsInCollection.length<1) || (selectedNomenclatureCardsWithoutCollection.length>0
+                            && selectedNomenclatureCardsInCollection.length>0)}">
+                        Сборка
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{'disabled':selectedNomenclatureCardsWithoutCollection.length<1 || selectedNomenclatureCardsInCollection.length>0}"
+                            data-ng-click="selectedNomenclatureCardsWithoutCollection.length<1 || CollectionAddClick()">
+                            <a>Создать сборку на основе выделенных позицций</a>
+                        </li>
+                        <li ng-class="{'disabled':selectedNomenclatureCardsWithoutCollection.length<1 || collections.length<1 || selectedNomenclatureCardsInCollection.length>0}"
+                            data-ng-click="selectedNomenclatureCardsWithoutCollection.length<1 || collections.length<1
+                            || addNomenclatureCardInExistCollectionClick()">
+                            <a>Добавить выделенные позиции в существующую сборку</a>
+                        </li>
+                        <li ng-class="{'disabled':selectedNomenclatureCardsInCollection.length<1 || selectedNomenclatureCardsWithoutCollection.length>0}"
+                            data-ng-click="selectedNomenclatureCardsInCollection.length<1 || deleteNomenclatureCardFromExistCollectionClick()">
+                            <a>Удалить выделенные позиции из текущей сборки</a>
+                        </li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-success"
+                        ng-class="{'disabled':selectedNomenclatureCardsWithoutCollection.length<1 && selectedNomenclatureCardsInCollection.length<1}"
+                        data-ng-click="selectedNomenclatureCardsWithoutCollection.length<1 && selectedNomenclatureCardsInCollection.length<1 || NomenclatureCardMoveClick()">
+                    Перемещение
+                </button>
+                <button type="button" class="btn btn-success"
+                        ng-class="{'disabled':selectedNomenclatureCardsWithoutCollection.length<1 && selectedNomenclatureCardsInCollection.length<1}"
+                        data-ng-click="selectedNomenclatureCardsWithoutCollection.length<1 && selectedNomenclatureCardsInCollection.length<1 || NomenclatureCardDeleteClick()">
+                    Списание
+                </button>
+                <button type="button" class="btn btn-info pull-right"
+                        ng-class="{'disabled': !nomenclatureCards && !collections}"
+                        data-ng-click="(!nomenclatureCards && !collections) || checkAll()">
+                    <span ng-show="!selectAll">Выделить всё</span>
+                    <span ng-show="selectAll">Снять выделение</span>
+                </button>
+            </div>
+            <div class="panel panel-primary nomenclature-card-in-place-of-storage ">
+                <div class="panel-heading">
+
+                </div>
+                <div class="panel-body scroll-in-panel" ng-if="data.length > 0">
+                    <!--Список коллекций-->
+                    <ul class="list-group list-group-flush collections-in-place-of-storage">
+                        <li class="list-group-item angular-ui-tree-handle"
+                            ng-repeat="collection in collections | orderBy:'name'"
+                            ng-class="{found: (findByBarcodeInCollections(collection) ||
+                                               findByInventoryInCollections(collection)) && query.length > 0}">
+                            <div class="row collection-description">
+                                <div class="col-sm-6">
+                                    <input type="checkbox"
+                                           ng-model="selectedCollections"
+                                           ng-checked="existCollections(collection)"
+                                           data-ng-click="checkAllCollection(collection)">
+                                    <span class="td-modal" data-ng-click="CollectionEditClick(collection)">{{collection.name}}</span>
+                                </div>
+                                <div class="col-sm-6" data-ng-click="CollectionEditClick(collection)">
+                                    {{collection.inventoryNumber}}
+                                </div>
+                            </div>
+                            <!--Карточки номенклатуры в коллекции-->
+                            <ul class="list-group list-group-flush nomenclature-card-in-place-of-storage">
+                                <li class="nomenclature-card-description list-group-item"
+                                    ng-repeat="nomenclatureCard in nomenclatureCards | filter: {collectionId : collection.id} | orderBy:'nomenclature.nomenclatureType.name' ">
+                                    <div class="row nomenclature-card-description">
+                                        <div class="col-sm-8">
+                                            <input type="checkbox"
+                                                   ng-model="selectedNomenclatureCardsInCollection"
+                                                   ng-checked="existInCollection(nomenclatureCard)"
+                                                   ng-click="ToggleNomenclatureCardInCollectionClick(nomenclatureCard, collection)">
+                                            <span class="td-modal"
+                                                  data-ng-click="NomenclatureCardTrClick(nomenclatureCard) ">
+                                                <span ng-show="nomenclatureCard.nomenclature.deletedData!=null"
+                                                      class="deletedModel">(Номенклатура удалена)</span>
+                                                <span>{{nomenclatureCard.nomenclature.name}}</span>
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-3" data-ng-click="NomenclatureCardTrClick(nomenclatureCard)">
+                                            {{nomenclatureCard.nomenclature.nomenclatureType.name}}
+                                        </div>
+                                        <div class="col-sm-1" data-ng-click="NomenclatureCardTrClick(nomenclatureCard)">
+                                            {{nomenclatureCard.count}}
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!--Вывод карточек номенклатуры без коллекций-->
+                    <ul class="list-group list-group-flush nomenclature-card-in-place-of-storage">
+                        <li class="nomenclature-card-description list-group-item angular-ui-tree-handle"
+                            ng-repeat="nomenclatureCard in nomenclatureCards | filter: { collection: null } | orderBy:'nomenclature.nomenclatureType.name'"
+                            ng-class="{found: (findByBarcodeInNomenclatureCards(nomenclatureCard) ||
+                                              findByInventoryInNomenclatureCards(nomenclatureCard)) && query.length > 0}">
+                            <div class="row nomenclature-card-description">
+                                <div class="col-sm-6">
+                                    <input type="checkbox"
+                                           ng-model="selectedNomenclatureCardsWithoutCollection"
+                                           ng-checked="existWithoutCollection(nomenclatureCard)"
+                                           ng-click="ToggleNomenclatureCardWithoutCollectionClick(nomenclatureCard)">
+                                    <span class="td-modal" data-ng-click="NomenclatureCardTrClick(nomenclatureCard) ">
+                                        <span ng-show="nomenclatureCard.nomenclature.deletedData!=null"
+                                              class="deletedModel">(Номенклатура удалена)</span>
+                                         <span>{{nomenclatureCard.nomenclature.name}}</span>
+                                    </span>
+                                </div>
+                                <div class="col-sm-2" data-ng-click="NomenclatureCardTrClick(nomenclatureCard)">
+                                    {{nomenclatureCard.inventoryNumber}}
+                                </div>
+                                <div class="col-sm-3" data-ng-click="NomenclatureCardTrClick(nomenclatureCard)">
+                                    {{nomenclatureCard.nomenclature.nomenclatureType.name}}
+                                </div>
+                                <div class="col-sm-1 count-padding"
+                                     data-ng-click="NomenclatureCardTrClick(nomenclatureCard)">
+                                    {{nomenclatureCard.count}}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="nodes_renderer.html">
+    <div ui-tree-handle class="tree-node tree-node-content" data-nodrag data-ng-click="PlaceOfStorageClick(node)"
+         ng-class="{selected: currentPlaceOfStorage === node,
+                    found:(findByName(node) && query.length > 0) || (findByBarcode(node)&& query.length > 0) ||
+                    (findByWorker(node) && query.length > 0) || (findByInventory(node) && query.length > 0),
+                    foundSelected: (currentPlaceOfStorage === node) && (findByName(node) && query.length>0) ||
+                    (findByBarcode(node)&& query.length>0) || (findByWorker(node) && query.length > 0) ||
+                    (findByInventory(node) && query.length > 0)}">
+        <div class="row">
+            <div class="col-sm-6">
+                <a class="btn btn-success btn-xs " ng-if="node.nodes && node.nodes.length > 0"
+                   ng-click="toggle(this); toggleClick(this)"><span
+                        class="glyphicon"
+                        ng-class="{
+                'glyphicon-chevron-right': collapsed,
+                'glyphicon-chevron-down': !collapsed
+                }"></span></a>
+                <a class="btn btn-warning btn-xs " ng-if="node.nodes && node.nodes.length < 1">
+                    <span class="glyphicon glyphicon-chevron-right"></span></a>
+                <a id="{{node.id}}">{{node.name}}</a>
+            </div>
+            <div class="col-sm-2"><a>{{node.typeOfStoragePlace.name}}</a></div>
+            <div class="col-sm-4">
+                <div class="pull-right">
+                    <a class="btn btn-primary btn-xs" data-nodrag
+                       data-ng-click="AddSubItemClick(this)">
+                        <span class="glyphicon glyphicon-plus"></span></a>
+                    <a class="btn btn-warning btn-xs" data-nodrag
+                       data-ng-click="PlaceOfStorageEditClick(node)">
+                        <span class="glyphicon glyphicon-edit"></span></a>
+                    <a class="btn btn-danger btn-xs" data-nodrag
+                       ng-click="PlaceOfStorageDeleteClick(this)"><span
+                            class="glyphicon glyphicon-trash"></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+        <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'" collapsed="true"
+            ng-show="visible(node)">
+        </li>
+    </ol>
+</script>
+
+<script type="text/ng-template" id="placeOfStorageEditView.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Добавить/Изменить место хранения</h3>
+    </div>
+    <div class="modal-body">
+        <form name="placeOfStorage">
+            <div class="form-group"
+                 ng-class="{ 'has-error' : placeOfStorage.placeOfStorageName.$invalid && !placeOfStorage.placeOfStorageName.$pristine }">
+                <label>Наименование места хранения</label>
+                <input type="text" class="form-control" name="placeOfStorageName" id="placeOfStorageName"
+                       ng-model="placeOfStorageNewEdit.name"
+                       placeholder="Наименование места хранения" required>
+                <div ng-messages="placeOfStorage.placeOfStorageName.$error" ng-messages-multiple
+                     ng-show="!placeOfStorage.placeOfStorageName.$pristine">
+                    <div ng-message="required" class="help-block">Укажите наименование места хранения</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Тип хранилища</label>
+                <ui-select ng-model="placeOfStorageNewEdit.typeOfStoragePlace" theme="selectize" required>
+                    <ui-select-match placeholder="Поиск...">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="typeOfStoragePlace in typesOfStoragePlace | filter: $select.search">
+                        <div ng-bind-html="typeOfStoragePlace.name | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="form-group">
+                <label>Закрепленный сотрудник</label>
+                <ui-select ng-model="placeOfStorageNewEdit.workers" theme="selectize">
+                    <ui-select-match placeholder="Поиск...">{{$select.selected.surname}} {{$select.selected.name}}
+                        {{$select.selected.patronymic}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="worker in workers| filter: $select.search">
+                        <div ng-bind-html="worker.surname+' '+worker.name+' '+worker.patronymic | highlight: $select.search"></div>
+                        <small ng-bind-html="worker.subUnit.name+' ('+worker.description+')' | highlight: $select.search"></small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="form-group">
+                <label>Родитель</label>
+                <ui-select ng-change="SelectParent(this)" ng-model="placeOfStorageNewEdit.parent" theme="selectize">
+                    <ui-select-match placeholder="Поиск...">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="parent in parents | filter: $select.search">
+                        <div ng-bind-html="parent.name+' ('+parent.typeOfStoragePlace.name+')' | highlight: $select.search"></div>
+                        <small ng-bind-html="parent.workers.surname+' '+parent.workers.name+' '+parent.workers.patronymic | highlight: $select.search"></small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(placeOfStorageNewEdit)"
+                ng-disabled="placeOfStorage.$invalid">Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="placeOfStorageDeleteView.html">
+    <div class="modal-header" ng-model="placeOfStorageNewEdit">
+        <h3 class="modal-title">Вы действительно хотите удалить <span
+                class="warning-text">{{placeOfStorageNewEdit.name}}</span>?
+        </h3>
+        <h3 class="modal-title warning-text">ВАЖНО! При удалении места хранения все карточки номенклатуры будут
+            списаны</h3>
+    </div>
+    <div class="modal-footer" ng-model="placeOfStorageNewEdit">
+        <button class="btn btn-primary" type="button" ng-click="ok(placeOfStorageNewEdit.id)">Да</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Нет</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="nomenclatureCardEditView.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Добавить/Изменить карточку номенклатуры</h3>
+    </div>
+    <div class="modal-body">
+        <form name="nomenclatureCard">
+            <div class="form-group">
+                <div class="form-group">
+                    <label>Типы номенклатуры</label>
+                    <ui-select ng-change="selectNomenclatureType()" ng-model="selectedNomenclatureType.value"
+                               theme="selectize" required>
+                        <ui-select-match placeholder="Поиск...">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="nomenclatureType in nomenclatureTypes | filter: $select.search">
+                            <div ng-bind-html="nomenclatureType.name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+
+                <div class="form-group">
+                    <label>Номенклатура</label>
+                    <ui-select ng-model="nomenclatureCardNewEdit.nomenclature" theme="selectize" required>
+                        <ui-select-match placeholder="Поиск...">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="nomenclature in nomenclatures | filter: $select.search">
+                            <div ng-bind-html="nomenclature.name | highlight: $select.search"></div>
+                            <small ng-bind-html="nomenclature.description | highlight: $select.search"></small>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <label>Серийный номер</label>
+                <input type="text" class="form-control" id="nomenclatureCardSerialNumber"
+                       ng-model="nomenclatureCardNewEdit.serialNumber"
+                       placeholder="Серийный номер">
+            </div>
+            <div class="form-group">
+                <label>Инвентарный номер</label>
+                <input type="text" class="form-control" id="nomenclatureCardInventoryNumber"
+                       ng-model="nomenclatureCardNewEdit.inventoryNumber"
+                       ng-disabled="nomenclatureCardNewEdit.collection.id > 0"
+                       placeholder="Инвентарный номер">
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : nomenclatureCard.nomenclatureCardBarcode.$invalid && !nomenclatureCard.nomenclatureCardBarcode.$pristine }">
+                <label>Barcode</label>
+                <input type="text" class="form-control" id="nomenclatureCardBarcode" name="nomenclatureCardBarcode"
+                       ng-model="nomenclatureCardNewEdit.barcode"
+                       ng-disabled="nomenclatureCardNewEdit.collection.id > 0"
+                       placeholder="Barcode">
+                <div ng-messages="nomenclatureCard.nomenclatureCardBarcode.$error" ng-messages-multiple
+                     ng-show="!nomenclatureCard.nomenclatureCardBarcode.$pristine">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Гарантия</label>
+                <input type="text" class="form-control" id="nomenclatureCardGuarantee"
+                       ng-model="nomenclatureCardNewEdit.guarantee"
+                       placeholder="Гарантия">
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : nomenclatureCard.nomenclatureCardReceiptDate.$invalid && !nomenclatureCard.nomenclatureCardReceiptDate.$pristine }">
+                <label>Дата поступления</label>
+                <input date-input type="date" class="form-control" id="nomenclatureCardReceiptDate"
+                       name="nomenclatureCardReceiptDate"
+                       ng-model="nomenclatureCardNewEdit.receiptDate"
+                       placeholder="Дата поступления" required>
+                <div ng-messages="nomenclatureCard.nomenclatureCardCount.$error" ng-messages-multiple
+                     ng-show="!nomenclatureCard.nomenclatureCardReceiptDate.$pristine">
+                    <div ng-message="required" class="help-block">Укажите дату сборки (поступления)</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Дата последнего обслуживания</label>
+                <input date-input type="date" class="form-control" id="nomenclatureCardServiceDate"
+                       name="nomenclatureCardServiceDate"
+                       ng-disabled="nomenclatureCardNewEdit.collection.id > 0"
+                       ng-model="nomenclatureCardNewEdit.serviceDate"
+                       placeholder="Дата последнего обслуживания">
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : nomenclatureCard.nomenclatureCardCount.$invalid && !nomenclatureCard.nomenclatureCardCount.$pristine }">
+                <label>Количество</label>
+                <input type="number" class="form-control" id="nomenclatureCardCount" name="nomenclatureCardCount"
+                       ng-model="nomenclatureCardNewEdit.count"
+                       placeholder="Количество" required>
+                <div ng-messages="nomenclatureCard.nomenclatureCardCount.$error" ng-messages-multiple
+                     ng-show="!nomenclatureCard.nomenclatureCardCount.$pristine" min="1">
+                    <div ng-message="required" class="help-block">Укажите колличество</div>
+                    <div ng-message="number" class="help-block">Должно быть указано число</div>
+                    <div ng-message="min" class="help-block">Значение должно быть больше или равно 1</div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(nomenclatureCardNewEdit)"
+                ng-disabled="nomenclatureCard.$invalid">Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="nomenclatureCardDeleteView.html">
+    <div class="modal-header" ng-model="nomenclatureCardNewEdit">
+        <h3 class="modal-title">Списание</h3>
+    </div>
+    <div class="modal-body">
+        <form name="writeOff">
+            <div class="form-group">
+                <div class="form-group" ng-repeat="nomenclatureCard in nomenclatureCards"
+                     ng-class="{ 'has-error' : writeOff.nomenclatureCardName{{nomenclatureCard.id}}.$invalid && !writeOff.nomenclatureCardName{{nomenclatureCard.id}}.$pristine }">
+                    <label>{{nomenclatureCard.nomenclature.name}}
+                        ({{nomenclatureCard.nomenclature.nomenclatureType.name}})</label>
+                    <input type="number" name="nomenclatureCardName{{nomenclatureCard.id}}" class="form-control"
+                           ng-model="nomenclatureCard.count" required min="1" max="{{::nomenclatureCard.count}}"
+                           placeholder="Колличество элементов для списания">
+                    <div ng-messages="writeOff.nomenclatureCardName{{nomenclatureCard.id}}.$error" ng-messages-multiple
+                         ng-show="!writeOff.nomenclatureCardName{{nomenclatureCard.id}}.$pristine">
+                        <div ng-message="required" class="help-block">Укажите колличество</div>
+                        <div ng-message="number" class="help-block">Должны быть указаны только цифры</div>
+                        <div ng-message="min" class="help-block">Значение должно быть больше 0</div>
+                        <div ng-message="max" class="help-block">Значение должно быть меньше или равно существующему
+                            колличеству
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer" ng-model="nomenclatureCardNewEdit">
+        <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="writeOff.$invalid">Да</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Нет</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="addNomenclatureCardInExistCollectionView.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Добавление карточек номенклатуры в существующую сборку</h3>
+    </div>
+    <div class="modal-body">
+        <form name="collection">
+            <div class="form-group">
+                <div class="form-group">
+                    <span class="warning-text">
+                        ВАЖНО! При добавлении карточки номенклатуры в сборку инвентарный номер и штрикод будут удалены
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label>Выберите сборку</label>
+                    <ui-select ng-model="selectedCollection.value" theme="selectize" required>
+                        <ui-select-match placeholder="Поиск...">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="collection in collections | filter: $select.search">
+                            <div ng-bind-html="collection.name | highlight: $select.search"></div>
+                            <small ng-bind-html="collection.inventoryNumber | highlight: $select.search"></small>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(selectedCollection.value)"
+                ng-disabled="collection.$invalid">Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="deleteNomenclatureCardfromCollectionView.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Вы действительно хотите исключить из сборки выделенные каточки номенклатуры?</h3>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(selectedCollection.value)">Сохранить</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="collectionEditView.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">Добавить/Изменить данные о сборке</h3>
+        <span class="warning-text">
+                        ВАЖНО! При добавлении карточки номенклатуры в сборку инвентарный номер и штрикод будут удалены
+        </span>
+    </div>
+    <div class="modal-body">
+        <form name="collection">
+            <div class="form-group"
+                 ng-class="{ 'has-error' : collection.collectionName.$invalid && !collection.collectionName.$pristine }">
+                <label>Наименование сборки</label>
+                <input type="text" class="form-control" name="collectionName" id="collectionName"
+                       ng-model="collectionNewEdit.name"
+                       placeholder="Наименование сборки" required>
+                <div ng-messages="collection.collectionName.$error" ng-messages-multiple
+                     ng-show="!collection.collectionName.$pristine">
+                    <div ng-message="required" class="help-block">Укажите наименование сборки</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Серийный номер</label>
+                <input type="text" class="form-control" id="collectionSerialNumber"
+                       ng-model="collectionNewEdit.serialNumber"
+                       placeholder="Серийный номер">
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : collection.collectionInventoryNumber.$invalid && !collection.collectionInventoryNumber.$pristine }">
+                <label>Инвентарный номер</label>
+                <input type="text" class="form-control" id="collectionInventoryNumber" name="collectionInventoryNumber"
+                       ng-model="collectionNewEdit.inventoryNumber"
+                       placeholder="Инвентарный номер" required>
+                <div ng-messages="collection.collectionInventoryNumber.$error" ng-messages-multiple
+                     ng-show="!collection.collectionInventoryNumber.$pristine">
+                    <div ng-message="required" class="help-block">Укажите инвентарный номер</div>
+                </div>
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : collection.collectionBarcode.$invalid && !collection.collectionBarcode.$pristine }">
+                <label>Barcode</label>
+                <input type="text" class="form-control" id="collectionBarcode" name="collectionBarcode"
+                       ng-model="collectionNewEdit.barcode"
+                       placeholder="Barcode" required>
+                <div ng-messages="collection.collectionBarcode.$error" ng-messages-multiple
+                     ng-show="!collection.collectionBarcode.$pristine">
+                    <div ng-message="required" class="help-block">Укажите barcode</div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label>Гарантия</label>
+                <input type="text" class="form-control" id="collectionGuarantee"
+                       ng-model="collectionNewEdit.guarantee"
+                       placeholder="Гарантия">
+            </div>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : collection.collectionReceiptDate.$invalid && !collection.collectionReceiptDate.$pristine }">
+                <label>Дата сборки (поступления)</label>
+                <input date-input type="date" class="form-control" id="collectionReceiptDate"
+                       name="collectionReceiptDate"
+                       ng-model="collectionNewEdit.buildDate"
+                       placeholder="Дата сборки (поступления)" required>
+                <div ng-messages="collection.collectionReceiptDate.$error" ng-messages-multiple
+                     ng-show="!collection.collectionReceiptDate.$pristine">
+                    <div ng-message="required" class="help-block">Укажите дату поступления</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Дата последнего обслуживания</label>
+                <input date-input type="date" class="form-control" id="ServiceReceiptDate"
+                       name="collectionServiceDate"
+                       ng-model="collectionNewEdit.serviceDate"
+                       placeholder="Дата последнего обслуживания">
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok(collectionNewEdit)"
+                ng-disabled="collection.$invalid">Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="moveNomenclatureCardView.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Перемещение</h3>
+    </div>
+    <div class="modal-body">
+        <form name="move">
+            <div class="form-group">
+                <label>Выберите место хранения для перемещения</label>
+                <ui-select name="movePlaceForStorage" ng-model="placeOfStorage.value" theme="selectize" required>
+                    <ui-select-match placeholder="Поиск...">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="placeOfStorage in placesOfStorage | filter: $select.search">
+                        <div ng-bind-html="placeOfStorage.name+' ('+placeOfStorage.typeOfStoragePlace.name+')' | highlight: $select.search"></div>
+                        <small ng-bind-html="placeOfStorage.workers.surname+' '+placeOfStorage.workers.name+' '+placeOfStorage.workers.patronymic | highlight: $select.search"></small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="form-group">
+                <div class="form-group" ng-repeat="nomenclatureCard in finalArr"
+                     ng-class="{ 'has-error' : move.nomenclatureCardName{{nomenclatureCard.id}}.$invalid && !writeOff.nomenclatureCardName{{nomenclatureCard.id}}.$pristine }">
+                    <label>{{nomenclatureCard.nomenclature.name}}
+                        ({{nomenclatureCard.nomenclature.nomenclatureType.name}})</label>
+                    <input type="number" name="nomenclatureCardName{{nomenclatureCard.id}}" class="form-control"
+                           ng-model="nomenclatureCard.count" required min="1" max="{{::nomenclatureCard.count}}"
+                           placeholder="Колличество элементов для списания">
+                    <div ng-messages="move.nomenclatureCardName{{nomenclatureCard.id}}.$error" ng-messages-multiple
+                         ng-show="!move.nomenclatureCardName{{nomenclatureCard.id}}.$pristine">
+                        <div ng-message="required" class="help-block">Укажите колличество</div>
+                        <div ng-message="number" class="help-block">Должны быть указаны только цифры</div>
+                        <div ng-message="min" class="help-block">Значение должно быть больше 0</div>
+                        <div ng-message="max" class="help-block">Значение должно быть меньше или равно существующему
+                            колличеству
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-disabled="move.$invalid" ng-click="ok(placeOfStorage.value)">
+            Сохранить
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+

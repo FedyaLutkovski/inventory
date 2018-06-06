@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/inventorydb
+    username: postgres
+    password: Ghzybr~19gg38
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    # Hikari Properties
+    hikari:
+      idle-timeout: 10000
+      maximum-pool-size: 50
+      minimum-idle: 20
+      pool-name: HikariPool
+
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+  http:
+    multipart:
+      max-file-size: 10240KB
+
+#Set Logging hikari to DEBUG mode
+#logging:
+#  level:
+#    com.zaxxer.hikari: debug
+

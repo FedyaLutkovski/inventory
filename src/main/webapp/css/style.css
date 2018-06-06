@@ -1,0 +1,626 @@
+[ui-view].ng-enter {
+    left: 0;
+    right: 0;
+    -webkit-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+}
+
+[ui-view].ng-enter {
+    opacity: 0;
+}
+
+[ui-view].ng-enter-active {
+    opacity: 1;
+}
+
+[ui-view].ng-leave {
+    opacity: 1;
+}
+
+[ui-view].ng-leave-active {
+    opacity: 0;
+}
+
+.navbar, .btn, .form-control {
+    border-radius: 0px;
+}
+
+.no-border-button {
+    border: 0px;
+}
+
+.login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -160px 0 0 -160px;
+    width: 320px;
+    padding: 10px;
+    border: 1px solid #888;
+    border-radius: 10px;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.center {
+    margin: 0 auto !important;
+    float: none !important;
+}
+
+.blue {
+    border: 2px solid #428bca;
+}
+
+.blue thead {
+    background: #428bca;
+}
+
+.purple {
+    border: 2px solid #9B59B6;
+}
+
+.purple thead {
+    background: #9B59B6;
+}
+
+thead {
+    /*color: white;*/
+}
+
+th,
+td {
+    text-align: center;
+    padding: 5px 0;
+}
+
+.tr-label {
+    text-align: right;
+    width: 25%;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+.tr-value {
+    text-align: left;
+    width: 75%;
+}
+
+tbody tr:nth-child(even) {
+    /*background: #ECF0F1;*/
+}
+
+tbody tr:hover {
+    background-color: #daeff7;
+    color: #337ab7;
+}
+
+tbody tr:nth-of-type(odd):hover {
+    background-color: #daeff7;
+    color: #337ab7;
+}
+
+.fixed {
+    top: 0;
+    position: fixed;
+    width: auto;
+    display: none;
+    border: none;
+}
+
+.scrollMore {
+    margin-top: 600px;
+}
+
+.up {
+    cursor: pointer;
+}
+
+.footer {
+    background-color: #333333;
+    color: white;
+    padding-top: 15px;
+}
+
+.chart-banner {
+    background-color: rgba(0, 140, 186, 0.3);
+    padding-top: 25px;
+    margin-bottom: 15px;
+    border-top: 1px solid #666666;
+    border-bottom: 1px solid #cccccc;
+}
+
+.tc-chart-js-legend {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+.tc-chart-js-legend li {
+    display: block;
+    float: left;
+    clear: both;
+    padding: 10px;
+}
+
+.tc-chart-js-legend li span {
+    width: 25px;
+    height: 25px;
+    display: block;
+    float: left;
+    margin-right: 10px;
+}
+
+.chart-legend li span {
+    display: inline-block;
+    width: 24px;
+    height: 12px;
+    margin-right: 5px;
+}
+
+span.deletedModel {
+    color: #f44336;
+}
+
+.control-menu {
+    padding-left: 0px;
+    padding-bottom: 5px;
+    text-align: left;
+}
+
+.btn {
+    margin-right: 8px;
+}
+
+.angular-ui-tree-handle {
+    background: #f8faff;
+    border: 1px solid #dae2ea;
+    color: #7c9eb2;
+    padding: 10px 10px;
+}
+
+.angular-ui-tree-handle:hover {
+    color: #438eb9;
+    background: #daeff7;
+    border-color: #dce2e8;
+}
+
+.angular-ui-tree-placeholder {
+    background: #f0f9ff;
+    border: 2px dashed #bed2db;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+tr.angular-ui-tree-empty {
+    height: 100px
+}
+
+.group-title {
+    background-color: #687074 !important;
+    color: #FFF !important;
+}
+
+/* --- Tree --- */
+.tree-node {
+    border: 1px solid #dae2ea;
+    background: #f8faff;
+    color: #7c9eb2;
+}
+
+.nodrop {
+    background-color: #f2dede;
+}
+
+.tree-node-content {
+    margin: 5px;
+}
+
+.tree-handle {
+    padding: 10px;
+    background: #428bca;
+    color: #FFF;
+    margin-right: 10px;
+}
+
+.angular-ui-tree-handle:hover {
+}
+
+.angular-ui-tree-placeholder {
+    background: #f0f9ff;
+    border: 2px dashed #bed2db;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+div.working-window {
+    margin-top: 50px;
+}
+
+div.left-filter-block {
+    margin-top: 93px;
+}
+
+.tree-node-content {
+    margin-left: 0px;
+}
+
+div.nomenclature-card-in-place-of-storage {
+    margin-top: 10px;
+    border-radius: 0px;
+    font-size: 12px;
+}
+
+div.panel-heading {
+    border-radius: 0px;
+}
+
+ul.nomenclature-card-in-place-of-storage {
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+
+ul.collections-in-place-of-storage {
+    margin-bottom: 10px;
+}
+
+div.nomenclature-card-description {
+    padding-right: 10px;
+    color: #337ab7;
+    text-decoration: none;
+    font-size: 12px;
+    text-align: left;
+
+}
+
+div.collection-description {
+    padding-right: 10px;
+    color: #337ab7;
+    text-decoration: none;
+    text-align: left;
+}
+
+li.nomenclature-card-description {
+    margin-bottom: 5px;
+}
+
+li.nomenclature-card-description:hover {
+    color: #438eb9;
+    background: #daeff7;
+    border-color: #dce2e8;
+}
+
+.list-group-item:first-child {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.list-group-item:last-child {
+    margin-bottom: 0;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.list-group-item {
+    margin-bottom: 5px;
+}
+
+div.no-padding {
+    padding: 0px;
+}
+
+div.count-padding {
+    padding-left: 5px;
+    padding-right: 0px;
+}
+
+div.main-view-place-of-storage {
+    margin-top: 70px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.warning-text {
+    color: #d9534f;
+}
+
+#brand-image {
+    height: 25px;
+}
+
+.my-drop-zone {
+    margin-top: 24px;
+    border: dotted 3px lightgray;
+}
+
+.nv-file-over {
+    border: dotted 3px red;
+}
+
+/* Default class applied to drop zones on over */
+.another-file-over-class {
+    border: dotted 3px green;
+}
+
+canvas {
+    background-color: #f3f3f3;
+    -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    box-shadow: 3px 3px 3px 0 #e3e3e3;
+    border: 1px solid #c3c3c3;
+    height: 100px;
+    margin: 6px 0 0 6px;
+}
+
+input[type=checkbox], input[type=radio] {
+    margin: 4px;
+}
+
+.selected {
+    background-color: #daeff7;
+}
+
+.selected.foundSelected {
+    background-color: #daeff7;
+}
+
+.modal-title {
+    text-align: center;
+}
+
+.drop-zone {
+    margin-top: 0px;
+}
+
+.sticky {
+    position: sticky;
+    top: 70px;
+}
+
+.scroll-in-panel {
+    overflow-y: auto;
+    height: 85vh;
+}
+
+.scroll-in-panel-with-search {
+    overflow-y: auto;
+    height: 82vh;
+}
+
+.found {
+    background-color: #ecf7e4;
+}
+
+.alerts-block {
+    width: 15vw;
+    /*height: 100vh;*/
+    position: absolute;
+    z-index: 1051;
+    right: 20px;
+    margin: 10px;
+    top: 46px;
+}
+
+.alert {
+    position: static;
+}
+
+.animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+@-webkit-keyframes bounceInRight {
+    from,
+    60%,
+    75%,
+    90%,
+    to {
+        -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(3000px, 0, 0);
+        transform: translate3d(3000px, 0, 0);
+    }
+
+    60% {
+        opacity: 1;
+        -webkit-transform: translate3d(-25px, 0, 0);
+        transform: translate3d(-25px, 0, 0);
+    }
+
+    75% {
+        -webkit-transform: translate3d(10px, 0, 0);
+        transform: translate3d(10px, 0, 0);
+    }
+
+    90% {
+        -webkit-transform: translate3d(-5px, 0, 0);
+        transform: translate3d(-5px, 0, 0);
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes bounceInRight {
+    from,
+    60%,
+    75%,
+    90%,
+    to {
+        -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(3000px, 0, 0);
+        transform: translate3d(3000px, 0, 0);
+    }
+
+    60% {
+        opacity: 1;
+        -webkit-transform: translate3d(-25px, 0, 0);
+        transform: translate3d(-25px, 0, 0);
+    }
+
+    75% {
+        -webkit-transform: translate3d(10px, 0, 0);
+        transform: translate3d(10px, 0, 0);
+    }
+
+    90% {
+        -webkit-transform: translate3d(-5px, 0, 0);
+        transform: translate3d(-5px, 0, 0);
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.alert.ng-enter {
+    -webkit-animation-name: bounceInRight;
+    animation-name: bounceInRight;
+}
+
+@-webkit-keyframes bounceOutRight {
+    20% {
+        opacity: 1;
+        -webkit-transform: translate3d(-20px, 0, 0);
+        transform: translate3d(-20px, 0, 0);
+    }
+
+    to {
+        opacity: 0;
+        -webkit-transform: translate3d(2000px, 0, 0);
+        transform: translate3d(2000px, 0, 0);
+    }
+}
+
+@keyframes bounceOutRight {
+    20% {
+        opacity: 1;
+        -webkit-transform: translate3d(-20px, 0, 0);
+        transform: translate3d(-20px, 0, 0);
+    }
+
+    to {
+        opacity: 0;
+        -webkit-transform: translate3d(2000px, 0, 0);
+        transform: translate3d(2000px, 0, 0);
+    }
+}
+
+.alert.ng-leave {
+    -webkit-animation-name: bounceOutRight;
+    animation-name: bounceOutRight;
+}
+
+span.td-modal {
+    display: inline-block;
+    width: 70%;
+}
+
+.login-form {
+    width: 340px;
+    margin: 50px auto;
+}
+
+.login-form form {
+    margin-bottom: 15px;
+    background: #f7f7f7;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+}
+
+.login-form h2 {
+    margin: 0 0 15px;
+}
+
+.login-form .btn {
+    min-height: 38px;
+    border-radius: 2px;
+}
+
+.report {
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: #808080;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.report a {
+    text-decoration: none;
+    color: #808080;
+}
+
+.report a:hover {
+    text-decoration: none;
+    color: #00AFF0;
+}
+
+.report thead > tr > td {
+    padding: 10px 10px 10px 0;
+    text-align: center;
+}
+
+.report > tbody > tr > td {
+    border-bottom: 1px solid #eaedef;
+    text-align: center;
+    padding: 10px;
+}
+
+.report > tbody > tr:nth-child(2n) {
+    background: #FAFAFA;
+}
+
+.report > tbody > tr:hover {
+    background: #F4F8FB;
+}
+
+.main-td {
+    width: 30%;
+}
+
+h4, h3.middle {
+    text-align: center;
+    margin-top: 10px;
+}
+
+select-in-report {
+    margin-top: 125px;
+    margin-left: 10px;
+}
+.merged-inputs{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+@media print {
+    .noprint {
+        display: none;
+    }
+}
